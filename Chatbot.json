@@ -1,0 +1,153 @@
+{
+  "name": "Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -840,
+        -420
+      ],
+      "id": "96ac13f1-3281-40a2-9805-9ea71251cefb",
+      "name": "When chat message received",
+      "webhookId": "e8de1967-acb5-4e82-b5bf-773516af6569"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are StartupScout.\n• Use `startup_details` to answer factual questions.\n• Use `generate_spinoff` when the user asks for ideas or spin-offs.\nNever fabricate data; call the tools first.\nKeep answers concise (≤ 120 words).\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -380,
+        -420
+      ],
+      "id": "fbfc5b14-554d-4a20-b75d-afdf531a7e94",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -460,
+        -200
+      ],
+      "id": "b83ba5ae-db77-4fd0-96ae-2f29872f5962",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jkkCbo7KwsuOaZ4f",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -300,
+        -200
+      ],
+      "id": "fddccc02-ec45-4b94-be4b-553ded7d5812",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "JD3AhHGxh9JP8c7a",
+          "mode": "list",
+          "cachedResultName": "Retriever"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -120,
+        -200
+      ],
+      "id": "1ed179dc-87ac-4d7a-8238-76cec82772fd",
+      "name": "Retriever"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retriever": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fcdc70f5-35c2-4277-811b-49f973458135",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8d4985328c3a6ce688efed5852efdea4d5a9b771e2fa22605de9ec27b50922f5"
+  },
+  "id": "cmNHjIyi5APKo9va",
+  "tags": []
+}

@@ -1,0 +1,111 @@
+{
+  "name": "Retriever",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "startups"
+      },
+      "id": "fadaca82-eee6-46f9-a44f-bbafe48cf03e",
+      "name": "Aggregate to JSON",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const strip = (html) => html\n  .replace(/<[^>]+>/g, '')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nconst topFive = $input.all()\n  .slice(0, 5)\n  .map(i => {\n    const rawHtml = i.json.content || '';\n    const taglineMatch = rawHtml.match(/<strong>(.*?)<\\/strong>/i);\n    return {\n      title:  (i.json.title || '').replace('Product Hunt Daily – ', '').trim(),\n      link:   i.json.link,\n      pubDate:i.json.pubDate,\n      tagline: taglineMatch ? taglineMatch[1] : '',\n      description: strip(rawHtml.split('</p>')[0] || ''),\n      discussionLink: (rawHtml.match(/href=\"([^\"]+)\">Discussion/i) || [])[1] || ''\n    };\n  });\n\nreturn topFive.map(obj => ({ json: obj }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        -40
+      ],
+      "id": "826fea65-0e81-4e0d-bd13-f4b1d5801a3a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "https://www.producthunt.com/feed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        -140,
+        -40
+      ],
+      "id": "81acd9f8-fb83-4ab7-aa97-bf2af091ca01",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        -40
+      ],
+      "id": "48ae089d-e423-4a4f-b2ec-d8927b788d51",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Aggregate to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate to JSON": {
+      "main": [
+        []
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5f1b2a26-45b3-4f4a-95e2-8a70903bba19",
+  "meta": {
+    "instanceId": "8d4985328c3a6ce688efed5852efdea4d5a9b771e2fa22605de9ec27b50922f5"
+  },
+  "id": "JD3AhHGxh9JP8c7a",
+  "tags": []
+}
