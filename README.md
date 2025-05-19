@@ -15,7 +15,7 @@ Powered by an **AI Agent** node, one custom tools (retriever), and OpenAI GPT-4o
 
 | Capability | How it works |
 |------------|--------------|
-| **Daily data pull** | RSS → Code clean-up → Product Hunt API mirror → merged JSON |
+| **Daily data pull** | RSS → Code clean-up → merged JSON |
 | **Detail lookup** | Tool startup details returns full JSON for a given startup name |
 | **Spin-off ideation** | Generates spinoffs to propose 3 derivative product ideas |
 | **Multi-tool reasoning** | OpenAI-Functions agent decides which tool(s) to call per user prompt |
